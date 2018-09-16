@@ -74,12 +74,12 @@ readFileAsync(path)
         processedWords.forEach((word) =>
         {
             // 如果是关键字
-            if (KEYWORDS[word])
+            if (KEYWORDS[word] !== undefined)
             {
                 wordPairs.push(new WordPair(KEYWORDS[word], word));
             }
             // 如果是运算符
-            else if (OPERATORS[word])
+            else if (OPERATORS[word] !== undefined)
             {
                 wordPairs.push(new WordPair(OPERATORS[word], word));
             }
@@ -104,5 +104,5 @@ readFileAsync(path)
     })
     .catch(err =>
     {
-        error(`文件读取发生错误\n${err}`);
+        error(`发生错误\n${err}`);
     });
