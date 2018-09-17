@@ -23,6 +23,7 @@ readFileAsync(path)
         });
         const operatorRegex = generateRegex(operators);
         let processedWords = []; // 已经扫描到的词法单元
+        // 从前到后，逐个单词扫描
         words.forEach(word =>
         {
             if (keywords.includes(word) || operators.includes(word)) // 如果这个单词是关键词或者运算符，就直接添加进已处理单词中
