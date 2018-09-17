@@ -2,75 +2,44 @@
 const {KEYWORDS, OPERATORS, IDENTIFIERS, REGEX} = require('./keywords');
 const {generateRegex, readFileAsync} = require('./functions');
 const {WordPair} = require('./WordPair');
-
 const {argv, exit} = process;
 const {error} = console;
 if (argv.length !== 3)
 {
-    error('参数数量错误。使用方法: main /code/file/path');
+    error('参数数量错误。使用方法: main.js /code/file/path');
     exit(1);
 }
-
 const path = argv[2];
 readFileAsync(path)
     .then(data =>
     {
-        const words = data.toString().trim().split(/\s+/);
-        const keywords = Object.keys(KEYWORDS);
-
-        const operators = Object.keys(OPERATORS);
-        const oneCharacterOperators = operators.filter((operator) =>
+        const words = data.toString().trim().split(/\s+/); // 使用空格分割代码
+        const keywords = Object.keys(KEYWORDS); // 关键字列表
+        const operators = Object.keys(OPERATORS); // 运算符列表
+        // 把运算符从长到短排序，使正则表达式中长运算符在前优先匹配
+        operators.sort((x, y) =>
         {
-            return operator.length === 1;
+            return y.length - x.length;
         });
-        const twoCharacterOperators = operators.filter((operator) =>
-        {
-            return operator.length === 2;
-        });
-
-        const oneCharacterOperatorRegex = generateRegex(oneCharacterOperators);
-        const twoCharacterOperatorRegex = generateRegex(twoCharacterOperators);
-
-        let processedWords = [];
-
+        const operatorRegex = generateRegex(operators);
+        let processedWords = []; // 已经扫描到的词法单元
         words.forEach(word =>
         {
-            // 如果这个单词没有被处理过
-            if (!processedWords.includes(word))
+            if (keywords.includes(word) || operators.includes(word)) // 如果这个单词是关键词或者运算符，就直接添加进已处理单词中
             {
-                // 如果这个单词是关键词或者运算符，就直接添加进已处理单词中
-                if (keywords.includes(word) || operators.includes(word))
+                processedWords.push(word);
+            }
+            else // 其他情况，有可能是运算符与字面量之间没有空格分隔，使用运算符来分割
+            {
+                processedWords.push(...word.match(operatorRegex), ...(word.split(operatorRegex).filter(word =>
                 {
-                    processedWords.push(word);
-                }
-                // 其他情况，有可能是运算符与字面量之间没有空格分隔
-                else
-                {
-                    // 先得到单词中存在的所有双字符运算符
-                    let operatorsInWord = word.match(twoCharacterOperatorRegex) || [];
-                    // 将单词用双字符运算符拆分成更小的单词
-                    const wordsWithoutTwoCharacterOperators = word.split(twoCharacterOperatorRegex);
-                    // 遍历通过双字符运算符拆分的单词数组
-                    wordsWithoutTwoCharacterOperators.forEach(splitWord =>
-                    {
-                        // 添加这个小单词中存在的单字符运算符
-                        operatorsInWord = [...operatorsInWord, ...(splitWord.match(oneCharacterOperatorRegex) || [])];
-                        // 把这个小单词中不含运算符的各部分添加到已处理单词中
-                        processedWords.push(...splitWord.split(oneCharacterOperatorRegex));
-                    });
-                    // 把这些运算符添加到已处理单词中
-                    processedWords.push(...operatorsInWord);
-                }
+                    return word.length !== 0;
+                })));
             }
         });
-
         const {ID, NUM} = REGEX;
         const wordPairs = [];
-        //对单词列表清除空白并去重
-        processedWords = [...new Set(processedWords.filter((word =>
-        {
-            return word.length !== 0;
-        })))];
+        processedWords = [...new Set(processedWords)]; // 去重
         processedWords.forEach((word) =>
         {
             // 如果是关键字

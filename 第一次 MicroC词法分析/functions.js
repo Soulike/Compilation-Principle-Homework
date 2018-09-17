@@ -23,7 +23,7 @@ function generateRegex(patternArray)
     let regex = '';
     patternArray.forEach((pattern) =>
     {
-        if (['+', '*', '?', '.', '(', ')', '[', ']', '{', '}', '|', '^', '$', '\\', '/'].includes(pattern))
+        if (['+', '*', '?', '.', '(', ')', '[', ']', '{', '}', '|', '^', '$', '\\', '/'].includes(pattern)) // 特殊字符转义
         {
             regex += `\\${pattern}|`;
         }
@@ -33,7 +33,7 @@ function generateRegex(patternArray)
         }
 
     });
-    if (regex.length !== 0)
+    if (regex.length !== 0) // 去除最后一个竖线
     {
         regex = regex.slice(0, -1);
     }
