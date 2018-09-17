@@ -74,4 +74,5 @@ readFileAsync(path)
     .catch(err =>
     {
         error(`发生错误\n${err}`);
+        exit(1);
     });
