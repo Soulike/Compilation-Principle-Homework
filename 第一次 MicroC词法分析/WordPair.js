@@ -1,3 +1,5 @@
+const {IDENTIFIERS} = require('./keywords');
+
 class WordPair
 {
     constructor(signal, value)
@@ -8,8 +10,16 @@ class WordPair
 
     printPair()
     {
-        process.stdout.write(`(${this.signal}, ${this.value})`);
-    };
+        if (this.signal !== IDENTIFIERS.ID)
+        {
+            process.stdout.write(`(${this.signal}, ${this.value})`);
+        }
+        else
+        {
+            process.stdout.write(`(${this.signal}, \'${this.value}\')`);
+        }
+
+    }
 }
 
 module.exports = {
