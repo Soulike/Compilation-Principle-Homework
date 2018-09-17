@@ -8,7 +8,7 @@ class WordPair
 
     printPair()
     {
-        console.log(`(${this.signal}, ${this.value})`);
+        process.stdout.write(`(${this.signal}, ${this.value})`);
     };
 }
 
