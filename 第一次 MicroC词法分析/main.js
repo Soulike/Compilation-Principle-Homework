@@ -43,23 +43,19 @@ readFileAsync(path)
         processedWords = [...new Set(processedWords)]; // 去重
         processedWords.forEach((word) =>
         {
-            // 如果是关键字
-            if (KEYWORDS[word] !== undefined)
+            if (KEYWORDS[word] !== undefined) // 如果是关键字
             {
                 wordPairs.push(new WordPair(KEYWORDS[word], word));
             }
-            // 如果是运算符
-            else if (OPERATORS[word] !== undefined)
+            else if (OPERATORS[word] !== undefined) // 如果是运算符
             {
                 wordPairs.push(new WordPair(OPERATORS[word], word));
             }
-            // 如果是标识符
-            else if (ID.test(word))
+            else if (ID.test(word)) // 如果是标识符
             {
                 wordPairs.push(new WordPair(IDENTIFIERS.ID, word));
             }
-            // 如果是数字
-            else if (NUM.test(word))
+            else if (NUM.test(word)) // 如果是数字
             {
                 wordPairs.push(new WordPair(IDENTIFIERS.NUM, word));
             }
@@ -70,7 +66,6 @@ readFileAsync(path)
         {
             wordPair.printPair();
         });
-        exit(0);
     })
     .catch(err =>
     {
