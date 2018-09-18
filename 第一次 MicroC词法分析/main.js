@@ -14,6 +14,7 @@ readFileAsync(path)
     .then(data =>
     {
         const words = data.toString().trim().split(/\s+/); // 使用空格分割代码
+        const {ID, NUM} = REGEX;
         const keywords = Object.keys(KEYWORDS); // 关键字列表
         const operators = Object.keys(OPERATORS); // 运算符列表
         // 把运算符从长到短排序，使正则表达式中长运算符在前优先匹配
@@ -30,17 +31,29 @@ readFileAsync(path)
             {
                 processedWords.push(word);
             }
-            else // 其他情况，有可能是运算符与字面量之间没有空格分隔，使用运算符来分割
+            else // 其他情况，有可能是运算符与字面量之间没有空格分隔
             {
-                processedWords.push(...word.match(operatorRegex), ...(word.split(operatorRegex).filter(word =>
+                const identifiers = [...(word.match(operatorRegex) || []), ...(word.split(operatorRegex).filter(word =>
                 {
                     return word.length !== 0;
-                })));
+                }))];
+                // 按照源代码中的正确顺序，进行排序
+                const sortedIdentifiers = []; // 经过正确排序的标识符列表
+                const identifierLastIndex = {}; // 特定标识符最后出现的位置
+                // 看看这个各个标识符在原字符串的什么位置，安放在数组的对应位置以保证顺序
+                identifiers.forEach(identifier =>
+                {
+                    identifierLastIndex[identifier] = word.indexOf(identifier, identifierLastIndex[identifier] + 1 || 0);
+                    sortedIdentifiers[identifierLastIndex[identifier]] = identifier;
+                });
+                // 因为双字符运算符可能导致 undefined，所以删除所有 undefined
+                processedWords.push(...(sortedIdentifiers).filter((identifier) =>
+                {
+                    return identifier !== undefined;
+                }));
             }
         });
-        const {ID, NUM} = REGEX;
         const wordPairs = [];
-        processedWords = [...new Set(processedWords)]; // 去重
         processedWords.forEach((word) =>
         {
             if (KEYWORDS[word] !== undefined) // 如果是关键字
