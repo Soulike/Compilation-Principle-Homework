@@ -7,11 +7,11 @@ int letterNum = 0;
 int digitNum = 0;
 int idNum = 0;
 %}
-delim [ ]
-letter [A-Za-z]
-digit [0-9]
-number {digit}+
-id {letter}+
+delim   [ ]
+letter  [A-Za-z]
+digit   [0-9]
+number  {digit}+
+id      {letter}+
 %%
 {number} {
     int r=atoi(yytext);
