@@ -222,11 +222,13 @@ class GrammarAnalyzer
         }
     }
 
+    // 发出一个警告，报告在哪里跳过了什么字符
     [skip](token, row, col)
     {
-        this[analyzeProcessAppend](`Error: Unexpected token \"${token}\" in row ${row}, col ${col}, skipping`);
+        this[analyzeProcessAppend](`Warning: Unexpected token \"${token}\" in row ${row}, col ${col}, skipping`);
     }
 
+    // 报错
     [error](msg)
     {
         this[analyzeProcessAppend](`Error: ${msg}`);
