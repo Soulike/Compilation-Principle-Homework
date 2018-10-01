@@ -21,6 +21,20 @@ class GrammarAnalyzer
         this[nextTokenIndex] = 0;
         this[nextToken] = this[tokenArray][0];
         this[E]();
+
+        // 正常情况下，最后应当剩下一个 # 作为结尾。如果最后没有 # 号，显示警告
+        if (this[nextToken] === undefined)
+        {
+            this[error]('Missing \"#\" in the end');
+        }
+        // 或者递归都已经完成了最后剩下的不是 # ，那就要把除了 # 以外的符号显示为错误
+        else if (this[nextToken].getValue() !== '#')
+        {
+            for (let i = this[nextTokenIndex]; i < this[tokenArray].length - 1; i++)
+            {
+                this[skip](this[tokenArray][i].getValue(), this[tokenArray][i].getRow(), this[tokenArray][i].getCol());
+            }
+        }
     }
 
     [analyzeProcessAppend](str)
@@ -69,44 +83,33 @@ class GrammarAnalyzer
             {
                 this[skip](this[nextToken].getValue(), this[nextToken].getRow(), this[nextToken].getCol());
             }
-
-            // 正常情况下，最后应当剩下一个 # 作为结尾。如果最后没有 # 号，显示警告
-            if (this[nextToken] === undefined)
-            {
-                this[error]('Missing \"#\" in the end');
-            }
-            // 或者递归都已经完成了最后剩下的不是 # ，那就要把除了 # 以外的符号显示为错误
-            else if (this[nextToken].getValue() !== '#')
-            {
-                for (let i = this[nextTokenIndex]; i < this[tokenArray].length - 1; i++)
-                {
-                    this[skip](this[tokenArray][i].getValue(), this[tokenArray][i].getRow(), this[tokenArray][i].getCol());
-                }
-            }
         }
     }
 
     [E2]()
     {
-        // 如果在 FIRST 集里面
-        if (this[nextToken] !== undefined && this[nextToken].getValue() === '+')
+        if (this[nextToken] !== undefined)
         {
-            this[analyzeProcessAppend]('E\'->+TE\'');
-            this[match]('+');
-            this[T]();
-            this[E2]();
-        }
-        // 如果是在 FOLLOW 集里面，则输出空串
-        else if (this[nextToken].getValue() === ')' || this[nextToken].getValue() === '#')
-        {
-            this[analyzeProcessAppend]('E\'->ε');
-        }
-        // 剩下的情况，尝试跳过这个符号再匹配一次
-        else if (this[nextToken] !== undefined)
-        {
-            this[skip](this[nextToken].getValue(), this[nextToken].getRow(), this[nextToken].getCol());
-            this[match](this[nextToken].getValue());
-            this[E2]();
+            // 如果在 FIRST 集里面
+            if (this[nextToken].getValue() === '+')
+            {
+                this[analyzeProcessAppend]('E\'->+TE\'');
+                this[match]('+');
+                this[T]();
+                this[E2]();
+            }
+            // 如果是在 FOLLOW 集里面，则输出空串
+            else if (this[nextToken].getValue() === ')' || this[nextToken].getValue() === '#')
+            {
+                this[analyzeProcessAppend]('E\'->ε');
+            }
+            // 剩下的情况，尝试跳过这个符号再匹配一次
+            else
+            {
+                this[skip](this[nextToken].getValue(), this[nextToken].getRow(), this[nextToken].getCol());
+                this[match](this[nextToken].getValue());
+                this[E2]();
+            }
         }
     }
 
@@ -149,24 +152,27 @@ class GrammarAnalyzer
 
     [T2]()
     {
-        if (this[nextToken] !== undefined && this[nextToken].getValue() === '*')
+        if (this[nextToken] !== undefined)
         {
-            this[analyzeProcessAppend]('T\'->*FT\'');
-            this[match]('*');
-            this[F]();
-            this[T2]();
-        }
-        // 如果是在 FOLLOW 集里面，则输出空串
-        else if (this[nextToken].getValue() === '+' || this[nextToken].getValue() === ')' || this[nextToken].getValue() === '#')
-        {
-            this[analyzeProcessAppend]('T\'->ε');
-        }
-        // 剩下的情况，尝试跳过这个符号再匹配一次
-        else if (this[nextToken] !== undefined)
-        {
-            this[skip](this[nextToken].getValue(), this[nextToken].getRow(), this[nextToken].getCol());
-            this[match](this[nextToken].getValue());
-            this[T2]();
+            if (this[nextToken].getValue() === '*')
+            {
+                this[analyzeProcessAppend]('T\'->*FT\'');
+                this[match]('*');
+                this[F]();
+                this[T2]();
+            }
+            // 如果是在 FOLLOW 集里面，则输出空串
+            else if (this[nextToken].getValue() === '+' || this[nextToken].getValue() === ')' || this[nextToken].getValue() === '#')
+            {
+                this[analyzeProcessAppend]('T\'->ε');
+            }
+            // 剩下的情况，尝试跳过这个符号再匹配一次
+            else
+            {
+                this[skip](this[nextToken].getValue(), this[nextToken].getRow(), this[nextToken].getCol());
+                this[match](this[nextToken].getValue());
+                this[T2]();
+            }
         }
     }
 

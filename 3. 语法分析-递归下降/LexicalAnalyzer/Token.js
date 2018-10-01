@@ -1,31 +1,36 @@
+const _type = Symbol('type');
+const _value = Symbol('value');
+const _row = Symbol('row');
+const _col = Symbol('col');
+
 class Token
 {
     constructor(type, value, row, col)
     {
-        this.type = type;
-        this.value = value;
-        this.row = row;
-        this.col = col;
+        this[_type] = type;
+        this[_value] = value;
+        this[_row] = row;
+        this[_col] = col;
     }
 
     getType()
     {
-        return this.type;
+        return this[_type];
     };
 
     getValue()
     {
-        return this.value;
+        return this[_value];
     };
 
     getRow()
     {
-        return this.row;
+        return this[_row];
     };
 
     getCol()
     {
-        return this.col;
+        return this[_col];
     };
 }
 

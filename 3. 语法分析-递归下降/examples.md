@@ -106,3 +106,18 @@ E->TE'              E->TE'
  ->id*id+idE'       T'->ε
  ->id*id+id         E'->ε
 ```
+
+## 5.+id*+id+)
+```
+ ->skip "+"
+E->TE'
+ ->FT'E'
+ ->idT'E'
+ ->id*FT'E'
+ ->skip "+"
+ ->id*idT'E'
+ ->id*idE'
+ ->id*id+TE'
+ ->skip ")"
+ ->#
+```
