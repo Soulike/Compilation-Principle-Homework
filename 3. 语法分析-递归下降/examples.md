@@ -1,6 +1,6 @@
 # 测试用例
 
-## 1. id*(id+id)
+## 1. id*(id+id)#
 ```
 E->TE'                      E->TE'
  ->FT'E'                    T->FT'
@@ -20,7 +20,7 @@ E->TE'                      E->TE'
  ->id*(id+id)               E'->ε
 ```
 
-## 2. id\*id+id\*id
+## 2. id\*id+id\*id#
 ```
 E->TE'                      E->TE'
  ->FT'E'                    T->FT'
@@ -37,7 +37,7 @@ E->TE'                      E->TE'
  ->id*id+id*id              E'->ε
 ```
 
-## 3. id\*id++id\*id
+## 3. id\*id++id\*id#
 ```
 E->TE'                      E->TE'
  ->FT'E'                    T->FT'
@@ -55,7 +55,7 @@ E->TE'                      E->TE'
  ->id*id+id*id              E'->ε
 ```
 
-## 2. id\*id+id\*)id
+## 2. id\*id+id\*)id#
 ```
 E->TE'                      E->TE'
  ->FT'E'                    T->FT'
@@ -73,7 +73,7 @@ E->TE'                      E->TE'
  ->id*id+id*id              E'->ε
 ```
 
-## 3. id**id+id)
+## 3. id**id+id)#
 ```
 E->TE'              E->TE'
  ->FT'E'            T->FT'
@@ -90,7 +90,7 @@ E->TE'              E->TE'
  ->skip ")"         
 ```
 
-## 4.idid*id+idid
+## 4.idid*id+idid#
 ```
 E->TE'              E->TE'
  ->FT'E'            T->FT'
@@ -107,17 +107,18 @@ E->TE'              E->TE'
  ->id*id+id         E'->ε
 ```
 
-## 5.+id*+id+)
+## 5.+id*+id+)#
 ```
  ->skip "+"
-E->TE'
- ->FT'E'
- ->idT'E'
- ->id*FT'E'
+E->TE'          E->TE'
+ ->FT'E'        T->FT'
+ ->idT'E'       F->id
+ ->id*FT'E'     T'->*FT'
  ->skip "+"
- ->id*idT'E'
- ->id*idE'
- ->id*id+TE'
+ ->id*idT'E'    F->id
+ ->id*idE'      T'->ε
+ ->id*id+TE'    E'->+TE'
  ->skip ")"
  ->#
+ ->             E'->ε
 ```
