@@ -25,22 +25,22 @@ class GrammarAnalyzer
             this[nextToken] = this[tokenArray][0];
             this[E]();
 
-            // 正常情况下，最后应当剩下一个 # 作为结尾。如果最后没有 # 号，显示警告
+            // 正常情况下，最后应当剩下一个 # 作为结尾。如果没有见到 # 号就用完了所有 token，显示警告
             if (this[nextToken] === undefined)
             {
                 this[error]('Missing \"#\" in the end');
             }
-            // 或者递归都已经完成了最后剩下的不是 # ，那就要把除了 # 以外的符号显示为错误
-            else if (this[nextToken].getValue() !== '#')
+            // 如果最后不是只剩下 # 字符，那就应当报错
+            else if (this[nextTokenIndex] !== this[tokenArray].length - 1)
             {
-                for (let i = this[nextTokenIndex]; i < this[tokenArray].length - 1; i++)
+                for (let i = this[nextTokenIndex] + 1; i < this[tokenArray].length; i++)
                 {
                     this[skip](this[tokenArray][i].getValue(), this[tokenArray][i].getRow(), this[tokenArray][i].getCol());
                 }
             }
             else
             {
-                this[analyzeProcessAppend]('Grammar Analysis Succeeded');
+                this[analyzeProcessAppend]('Grammar analysis succeeded');
             }
         }
         catch (e)
@@ -78,6 +78,11 @@ class GrammarAnalyzer
                     this[analyzeProcessAppend]('E->TE\'');
                     this[T]();
                     this[E2]();
+                }
+                // 在递归中见到了结束符号，证明是意外的结尾，直接结束当前递归分析
+                else if (this[nextToken].getValue() === '#')
+                {
+                    this[error]('Unexpected ending mark \"#\"');
                 }
                 // 如果不在 E 的 FIRST 集合中，则跳过直到见到 FOLLOW 集合中的值
                 else if (!FIRST('E').includes(this[nextToken]))
