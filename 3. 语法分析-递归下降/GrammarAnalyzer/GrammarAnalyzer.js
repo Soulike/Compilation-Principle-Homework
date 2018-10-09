@@ -33,15 +33,16 @@ class GrammarAnalyzer
             // 如果最后不是只剩下 # 字符，那就应当报错
             else if (this[nextTokenIndex] !== this[tokenArray].length - 1)
             {
-                for (let i = this[nextTokenIndex] + 1; i < this[tokenArray].length; i++)
+                for (let i = this[nextTokenIndex]; i < this[tokenArray].length; i++)
                 {
-                    this[skip](this[tokenArray][i].getValue(), this[tokenArray][i].getRow(), this[tokenArray][i].getCol());
+                    if (this[tokenArray][i].getValue() !== '#')
+                    {
+                        this[skip](this[tokenArray][i].getValue(), this[tokenArray][i].getRow(), this[tokenArray][i].getCol());
+                    }
                 }
             }
-            else
-            {
-                this[analyzeProcessAppend]('Grammar analysis succeeded');
-            }
+
+            this[analyzeProcessAppend]('Grammar analysis finished');
         }
         catch (e)
         {
@@ -56,13 +57,35 @@ class GrammarAnalyzer
 
     [match](token)
     {
-        if (this[tokenArray][this[nextTokenIndex]].getValue() === token)
+        try
         {
-            this[nextToken] = this[tokenArray][++this[nextTokenIndex]];
+
+            if (this[tokenArray][this[nextTokenIndex]] !== undefined)
+            {
+                // 正常情况下，match 函数不会见到结束符 #（因为递归结束后才会验证结束符），如果见到了就是异常
+                if (this[tokenArray][this[nextTokenIndex]].getValue() === '#')
+                {
+                    this[error]('Unexpected ending mark \"#\"');
+                }
+                // 其他情况，检查预期符号与实际符号是否相符
+                else if (this[tokenArray][this[nextTokenIndex]].getValue() === token)
+                {
+                    this[nextToken] = this[tokenArray][++this[nextTokenIndex]];
+                }
+                // 不相符，试着跳过这个符号并输出错误信息
+                else
+                {
+                    this[skip](token.getValue(), token.getRow(), token.getCol());
+                }
+            }
+            else // 正常情况下，match 函数不会见到 undefined。如果见到了，一定是输入不完整
+            {
+                this[error]('Uncompleted code');
+            }
         }
-        else
+        catch (e)
         {
-            this[skip](token.getValue(), token.getRow(), token.getCol());
+            this[error](e);
         }
     }
 
@@ -70,7 +93,7 @@ class GrammarAnalyzer
     {
         try
         {
-            if (this[nextToken] !== undefined)
+            if (this[nextToken] !== undefined && this[nextToken].getValue() !== '#')
             {
                 // 确实在 E 的 FIRST 集合中，正常进行
                 if (FIRST('E').includes(this[nextToken]))
@@ -78,11 +101,6 @@ class GrammarAnalyzer
                     this[analyzeProcessAppend]('E->TE\'');
                     this[T]();
                     this[E2]();
-                }
-                // 在递归中见到了结束符号，证明是意外的结尾，直接结束当前递归分析
-                else if (this[nextToken].getValue() === '#')
-                {
-                    this[error]('Unexpected ending mark \"#\"');
                 }
                 // 如果不在 E 的 FIRST 集合中，则跳过直到见到 FOLLOW 集合中的值
                 else if (!FIRST('E').includes(this[nextToken]))
@@ -148,7 +166,7 @@ class GrammarAnalyzer
     {
         try
         {
-            if (this[nextToken] !== undefined)
+            if (this[nextToken] !== undefined && this[nextToken].getValue() !== '#')
             {
                 // 确实在 T 的 FIRST 集合中，正常进行
                 if (FIRST('T').includes(this[nextToken]))
@@ -156,11 +174,6 @@ class GrammarAnalyzer
                     this[analyzeProcessAppend]('T->FT\'');
                     this[F]();
                     this[T2]();
-                }
-                // 在递归中见到了结束符号，证明是意外的结尾，直接结束当前递归分析
-                else if (this[nextToken].getValue() === '#')
-                {
-                    this[error]('Unexpected ending mark \"#\"');
                 }
                 // 如果不在 T 的 FIRST 集合中，则跳过直到见到 FOLLOW 集合中的值
                 else if (!FIRST('T').includes(this[nextToken]))
@@ -242,11 +255,6 @@ class GrammarAnalyzer
                         this[analyzeProcessAppend]('F->id');
                         this[match](this[nextToken].getValue());
                     }
-                }
-                // 在递归中见到了结束符号，证明是意外的结尾，直接结束当前递归分析
-                else if (this[nextToken].getValue() === '#')
-                {
-                    this[error]('Unexpected ending mark \"#\"');
                 }
                 // 如果不在 F 的 FIRST 集合中，则跳过直到见到 FOLLOW 集合中的值
                 else if (!FIRST('F').includes(this[nextToken]))
