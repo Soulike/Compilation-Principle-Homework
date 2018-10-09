@@ -93,7 +93,11 @@ class GrammarAnalyzer
     {
         try
         {
-            if (this[nextToken] !== undefined && this[nextToken].getValue() !== '#')
+            if (this[nextToken].getValue() === '#')
+            {
+                this[match]('#');
+            }
+            else if (this[nextToken] !== undefined)
             {
                 // 确实在 E 的 FIRST 集合中，正常进行
                 if (FIRST('E').includes(this[nextToken]))
@@ -166,7 +170,11 @@ class GrammarAnalyzer
     {
         try
         {
-            if (this[nextToken] !== undefined && this[nextToken].getValue() !== '#')
+            if (this[nextToken].getValue() === '#')
+            {
+                this[match]('#');
+            }
+            else if (this[nextToken] !== undefined)
             {
                 // 确实在 T 的 FIRST 集合中，正常进行
                 if (FIRST('T').includes(this[nextToken]))
@@ -238,7 +246,11 @@ class GrammarAnalyzer
     {
         try
         {
-            if (this[nextToken] !== undefined)
+            if (this[nextToken].getValue() === '#')
+            {
+                this[match]('#');
+            }
+            else if (this[nextToken] !== undefined)
             {
                 // 确实在 F 的 FIRST 集合中，正常进行
                 if (FIRST('F').includes(this[nextToken]))
