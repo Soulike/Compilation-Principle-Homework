@@ -115,8 +115,15 @@ class GrammarAnalyzer
                             this[skip]((this[tokenArray][this[currentIndex]]).getValue());
                         }
                     }
-                    this[analyzeProcessAppend]('分析结束');
-                    return;
+                    else if ((this[tokenArray][this[currentIndex]]).getValue() !== '#') // 如果是最后一个字符但是却不是 #，就跳过
+                    {
+                        this[skip]((this[tokenArray][this[currentIndex]]).getValue());
+                    }
+                    else
+                    {
+                        this[analyzeProcessAppend]('分析结束');
+                        return;
+                    }
                 }
                 else if (stackTop === (this[tokenArray][this[currentIndex]]).getValue()) // 如果栈顶与输入记号相同，就栈顶出栈，输入后移
                 {
