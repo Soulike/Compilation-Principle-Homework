@@ -1,4 +1,4 @@
-const {LexicalAnalyzer, Token, getTokenType} = require('../LexicalAnalyzer');
+const {LexicalAnalyzer, Token, Functions} = require('../LexicalAnalyzer');
 const {Element} = require('./Element');
 const {getAction, getGoto} = require('./AnalyzeTable');
 
@@ -6,7 +6,15 @@ class GrammarAnalyzer
 {
     constructor(code)
     {
+        const {getTokenType} = Functions;
         this.tokenArray = (new LexicalAnalyzer(code)).getTokenArray();
+
+        // 如果第一个数是+或者-，就补一个 0
+        if (this.tokenArray[0].getValue() === '+' || this.tokenArray[0].getValue() === '-')
+        {
+            this.tokenArray = [new Token(getTokenType('number'), 0, -1, -1), ...this.tokenArray];
+        }
+
         this.currentTokenIndex = -1;
         this.analyzeProcess = '';
         this.stack = [];

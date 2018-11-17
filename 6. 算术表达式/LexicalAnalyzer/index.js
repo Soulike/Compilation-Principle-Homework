@@ -1,9 +1,9 @@
 const {LexicalAnalyzer} = require('./LexicalAnalyzer');
-const {getTokenType} = require('./TokenTypes');
 const {Token} = require('./Token');
+const Functions = require('./Functions');
 
 module.exports = {
     LexicalAnalyzer,
-    getTokenType,
-    Token
+    Token,
+    Functions
 };

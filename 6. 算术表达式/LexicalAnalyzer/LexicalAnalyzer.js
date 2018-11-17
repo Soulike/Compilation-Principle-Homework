@@ -1,5 +1,5 @@
 const {Token} = require('./Token');
-const {getTokenType} = require('./TokenTypes');
+const {getTokenType} = require('./Functions');
 const {TOKEN_REGEX} = require('./Regex');
 
 // 私有变量 Symbol
@@ -43,6 +43,7 @@ class LexicalAnalyzer
     [analyze]()
     {
         const {ID, OPERATOR, BLANK, NUMBER} = TOKEN_REGEX;
+        let isNumberLastTime = false;
         let row = this[getNextRow]();
         let currentCol = 0;
         let matchResult = null;
@@ -57,15 +58,18 @@ class LexicalAnalyzer
                     token = matchResult[0];
                     this[tokenArray].push(new Token(getTokenType('id'), token, this[currentRowNumber], currentCol + 1));
                 }
+                // 因为不可能两次都匹配到数字，因此设置一个标志位代表上次是不是匹配的数字
+                else if ((matchResult = row.match(NUMBER)) !== null && isNumberLastTime === false)
+                {
+                    token = matchResult[0];
+                    this[tokenArray].push(new Token(getTokenType('number'), token, this[currentRowNumber], currentCol + 1));
+                    isNumberLastTime = true;
+                }
                 else if ((matchResult = row.match(OPERATOR)) !== null)
                 {
                     token = matchResult[0];
                     this[tokenArray].push(new Token(getTokenType(token), token, this[currentRowNumber], currentCol + 1));
-                }
-                else if ((matchResult = row.match(NUMBER)) !== null)
-                {
-                    token = matchResult[0];
-                    this[tokenArray].push(new Token(getTokenType('number'), token, this[currentRowNumber], currentCol + 1));
+                    isNumberLastTime = false;
                 }
                 else if ((matchResult = row.match(BLANK)) !== null)
                 {

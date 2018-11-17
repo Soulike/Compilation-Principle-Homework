@@ -4,7 +4,7 @@ const TOKEN_REGEX = {
     ID: /^[A-z_][A-z0-9_]*!/,
     OPERATOR: generateOperatorRegex(Object.keys(TOKEN_TYPES.OPERATORS)),
     BLANK: /^\s+/,
-    NUMBER: /^(?:[0-9]+e-?[0-9]+)|(?:[0-9]+(?:\.[0-9]+)?)/
+    NUMBER: /^[+\-]?(?:[0-9]+e-?[0-9]+)|^(?:-?[0-9]+(?:\.[0-9]+)?)/
 };
 
 module.exports = {

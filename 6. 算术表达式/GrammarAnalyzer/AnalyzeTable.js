@@ -1,4 +1,4 @@
-const {getTokenType} = require('../LexicalAnalyzer');
+const {Functions} = require('../LexicalAnalyzer');
 const {NonTerminalToken} = require('./NonTerminalToken');
 
 class Action
@@ -105,6 +105,7 @@ Action.REDUCE = 'REDUCE';
  * */
 
 const {SHIFT, REDUCE} = Action;
+const {getTokenType} = Functions;
 const ActionTable = {
     0: {
         [getTokenType('(')]: new Action(SHIFT, 4),

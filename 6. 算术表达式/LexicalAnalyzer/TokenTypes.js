@@ -13,12 +13,6 @@ const TOKEN_TYPES = {
     'number': 8
 };
 
-function getTokenType(token)
-{
-    return TOKEN_TYPES[token] ? TOKEN_TYPES[token] : TOKEN_TYPES.OPERATORS[token];
-}
-
 module.exports = {
-    getTokenType,
     TOKEN_TYPES
 };
