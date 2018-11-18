@@ -284,6 +284,13 @@ const ActionTable = {
         [getTokenType('*')]: new Action(REDUCE, -1, 3, new NonTerminalToken('T'), 5, 'T->T/F'),
         [getTokenType('/')]: new Action(REDUCE, -1, 3, new NonTerminalToken('T'), 5, 'T->T/F'),
         [getTokenType(')')]: new Action(REDUCE, -1, 3, new NonTerminalToken('T'), 5, 'T->T/F')
+    },
+    31: {
+        [getTokenType('+')]: new Action(REDUCE, -1, 3, new NonTerminalToken('F'), 7, 'F->(E)'),
+        [getTokenType('-')]: new Action(REDUCE, -1, 3, new NonTerminalToken('F'), 7, 'F->(E)'),
+        [getTokenType('*')]: new Action(REDUCE, -1, 3, new NonTerminalToken('F'), 7, 'F->(E)'),
+        [getTokenType('/')]: new Action(REDUCE, -1, 3, new NonTerminalToken('F'), 7, 'F->(E)'),
+        [getTokenType(')')]: new Action(REDUCE, -1, 3, new NonTerminalToken('F'), 7, 'F->(E)')
     }
 };
 

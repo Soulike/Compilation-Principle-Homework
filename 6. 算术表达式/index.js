@@ -8,7 +8,7 @@ const rl = readline.createInterface({
     output: process.stdout
 });
 
-// 1.16+2*(3.53-7)/1e2
+// -1.16+2*(3.53-7)*(3-6)/1e2
 rl.question('Input your code. End with #:\n', (answer) =>
 {
     code = answer + '#';
