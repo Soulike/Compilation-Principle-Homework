@@ -102,6 +102,7 @@ Action.REDUCE = 'REDUCE';
  28	r2	r2	s22	s23		r2
  29	r4	r4	r4	r4		r4
  30	r5	r5	r5	r5		r5
+ 31	r7	r7	r7	r7		r7
  * */
 
 const {SHIFT, REDUCE} = Action;
